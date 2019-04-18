@@ -1,13 +1,5 @@
 ---
 
-- name: LVG | Creating new LVM volume group(s)
-  lvg:
-    vg: "{{ item.vgname }}"
-    pvs: "{{ item.disks }}"
-    state: present
-  with_items: "{{ lvm_groups }}"
-  when: item.state|default("present") == "present"
-
 - name: LVOL | Creating new LVM logical volume(s)
   lvol:
     vg: "{{ item.0.vgname }}"
@@ -116,11 +108,3 @@
     (item.0.state|default("present") == "present") and
     (item.1 is defined and item.1 | length > 0 ) and
     (item.1.state|default("mounted") == "absent")
-
-- name: LVG | Removing LVM volume group(s)
-  lvg:
-    vg: "{{ item.vgname }}"
-    pvs: "{{ item.disks }}"
-    state: absent
-  with_items: "{{ lvm_groups }}"
-  when: item.state|default("present") == "absent"

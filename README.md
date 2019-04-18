@@ -1,18 +1,20 @@
 LVM Ansible role
 ================
 
-Role to manage LVM Groups/Logical Volumes. Can be used to create, extend or resize LVM Groups and volumes.
+Role to manage LVM Groups/Logical Volumes. Can be used to create, extend or resize LVM Groups and volumes. To avoid managing
+devices list on inventories, creation of VG is now separate from managing (resizing, mounting LV, etc.)
 
 Requirements
 ------------
 
-Devices/disks to be part of the LVM setup must be identified prior to using this role. Ensure that you select the correct devices/disks.
+No more need for devices/disks to be part of the LVM setup. Now use `lvm_action` instead.
 
 Role Variables
 --------------
 
 `lvm_apply` allow backward compatibility for non-LVM
 `lvm_groups` is a list containing vgs.
+`lvm_action` is used for VG creation/upgrade
 
 ### vgs
 
@@ -35,15 +37,31 @@ Dependencies
 
 None
 
-Example Playbook
-----------------
+Example Playbooks
+-----------------
 
+Create a new VG named `new_vg` with two already attached disks, `/dev/sdc` and `/dev/sdd`.
+
+```
+    - hosts: servers
+      vars:
+        lvm_action: "add_vg"
+        lvm_vgname: "new_vg"
+        lvm_disk:
+	  - /dev/sdc
+	  - /dev/sdd
+      roles:
+         - peopledoc.ansible-lvm
+```
+
+Apply configuration with multiple LV on the VG named `misc-vg`
+
+```
     - hosts: servers
       vars:
         lvm_apply: true
         lvm_groups:
           - vgname: misc-vg
-            disks: /dev/sda5,/dev/sdc,/dev/sdd
             state: present
             lvnames:
               - lvname: swap_1
@@ -58,12 +76,12 @@ Example Playbook
                 mount_options: 'defaults,noatime'
           # VG whitout LV
           - vgname: test-vg
-            disks: /dev/sdb
             state: present
             lvnames: []
 
       roles:
          - peopledoc.ansible-lvm
+```
 
 License
 -------
