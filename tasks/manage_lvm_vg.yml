@@ -16,7 +16,7 @@
     - lvm_action == "add_vg"
 
 - name: LVG | Removing LVM volume group
-  debug: msg="You requested *** DELETION *** of logical volume {{ lvm_vgname }}. Too dangerous, do it manually please."
+  debug: msg="You requested *** DELETION *** of volume group {{ lvm_vgname }}. Too dangerous, do it manually please."
   with_items: "{{ lvm_groups }}"
   when:
     - item.state|default("present") == "present"
