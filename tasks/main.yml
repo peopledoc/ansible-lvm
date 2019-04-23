@@ -10,6 +10,14 @@
   when: ansible_os_family == "RedHat"
   tags: install
 
+- name: IMPORT | Manage VG
+  import_tasks: manage_lvm_vg.yml
+  when:
+    - lvm_action is defined
+    - lvm_action == "add_vg" or lvm_action == "del_vg"
+
 - name: IMPORT | Apply
   import_tasks: manage_lvm.yml
-  when: lvm_apply
+  when:
+    - lvm_apply
+    - lvm_action|default("") == ""
