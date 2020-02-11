@@ -1,0 +1,55 @@
+---
+# molecule_yml
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: pd-lvm-stretch
+    image: debian:stretch
+    dockerfile: ../resources/Dockerfile.j2
+    command: /sbin/init
+    tmpfs: ['/tmp', '/run', '/run/lock']
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - lvm
+    devices:
+      - /dev/loop0:/dev/vhd1:rw
+  - name: pd-lvm-buster
+    image: debian:buster
+    dockerfile: ../resources/Dockerfile.j2
+    command: /sbin/init
+    tmpfs: ['/tmp', '/run', '/run/lock']
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - lvm
+    devices:
+      - /dev/loop1:/dev/vhd1:rw
+provisioner:
+  name: ansible
+  log: true
+  lint:
+    name: ansible-lint
+    enabled: false
+  inventory:
+    links:
+      group_vars: inventory/group_vars/
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+
+scenario:
+  name: default
+  create_sequence:      # molecule create order change
+    - prepare
+    - create
+  converge_sequence:    # molecule converge order change
+    - dependency
+    - prepare
+    - create
+    - converge

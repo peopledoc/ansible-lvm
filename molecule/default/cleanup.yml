@@ -1,0 +1,24 @@
+---
+- name: Cleanup
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Find loopback name
+      become: yes
+      shell: losetup -l | grep /tmp/loopbackfile_{{ inventory_hostname }}.img | awk '{ print $1; }'
+      register: lodevice
+      failed_when: lodevice.rc != 0
+      delegate_to: localhost
+
+    - name: Remove loopback fake disk
+      become: yes
+      shell: losetup -d {{ lodevice.stdout }}
+      delegate_to: localhost
+      when:
+        - lodevice.stdout != ""
+
+    - name: Remove local space
+      file:
+        path: /tmp/loopbackfile_{{ inventory_hostname }}.img
+        state: absent
+      delegate_to: localhost
