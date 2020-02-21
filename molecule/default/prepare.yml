@@ -3,32 +3,9 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Create local space
-      shell: dd if=/dev/zero of=/tmp/loopbackfile_{{ inventory_hostname }}.img bs=100M count=10
-      register: localspace
-      failed_when: localspace.rc != 0
-      delegate_to: localhost
-
-    - name: Display platforms involved
-      debug:
-        msg: "{{ item.name }}"
-      with_items:
-        - "{{ molecule_yml.platforms }}"
-
-    - name: Create loopback fake disk
-      become: yes
-      shell: losetup {{ item.devices[0].split(':')[0] }} /tmp/loopbackfile_{{ inventory_hostname }}.img
-      register: loopback_device
-      failed_when: loopback_device.rc != 0
-      delegate_to: localhost
-      with_items:
-        - "{{ molecule_yml.platforms }}"
-      when: item.name == inventory_hostname
-
-#     - include_role:
-#         name: peopledoc.ansible-lvm
-#       vars:
-#         lvm_action: "add_vg"
-#         lvm_vgname: "{{ lvm_groups[0].vgname }}"
-#         lvm_disk: "{{ additional_disk }}"
-# 
+    - include_role:
+        name: peopledoc.ansible-lvm
+      vars:
+        lvm_action: "add_vg"
+        lvm_vgname: "{{ lvm_groups[0].vgname }}"
+        lvm_disk: /dev/loop0

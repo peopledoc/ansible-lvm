@@ -1,5 +1,4 @@
 ---
-# molecule_yml
 dependency:
   name: galaxy
 driver:
@@ -16,8 +15,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - lvm
-    devices:
-      - /dev/loop0:/dev/vhd1:rw
   - name: pd-lvm-buster
     image: debian:buster
     dockerfile: ../resources/Dockerfile.j2
@@ -27,8 +24,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - lvm
-    devices:
-      - /dev/loop1:/dev/vhd1:rw
 provisioner:
   name: ansible
   log: true
@@ -42,14 +37,3 @@ verifier:
   name: testinfra
   lint:
     name: flake8
-
-scenario:
-  name: default
-  create_sequence:      # molecule create order change
-    - prepare
-    - create
-  converge_sequence:    # molecule converge order change
-    - dependency
-    - prepare
-    - create
-    - converge
