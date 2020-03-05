@@ -1,0 +1,39 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: pd-lvm-stretch
+    image: debian:stretch
+    dockerfile: ../resources/Dockerfile.j2
+    command: /sbin/init
+    tmpfs: ['/tmp', '/run', '/run/lock']
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - lvm
+  - name: pd-lvm-buster
+    image: debian:buster
+    dockerfile: ../resources/Dockerfile.j2
+    command: /sbin/init
+    tmpfs: ['/tmp', '/run', '/run/lock']
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - lvm
+provisioner:
+  name: ansible
+  log: true
+  lint:
+    name: ansible-lint
+    enabled: false
+  inventory:
+    links:
+      group_vars: inventory/group_vars/
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

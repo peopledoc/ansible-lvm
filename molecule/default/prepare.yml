@@ -1,0 +1,11 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: peopledoc.ansible-lvm
+      vars:
+        lvm_action: "add_vg"
+        lvm_vgname: "{{ lvm_groups[0].vgname }}"
+        lvm_disk: /dev/loop0

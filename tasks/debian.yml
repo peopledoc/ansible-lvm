@@ -1,15 +1,14 @@
 ---
 
 - name: APT | Install packages
-  apt: >
-    pkg={{ item }}
-    update_cache=yes
-    cache_valid_time=3600
-    state=present
-  with_items:
-     - lvm2
-     - scsitools
-     - xfsprogs
+  apt:
+    pkg:
+      - lvm2
+      - scsitools
+      - xfsprogs
+    update_cache: yes
+    cache_valid_time: 3600
+    state: present
 
 - name: COMMAND | Checking for scsi devices
   command: sg_scan

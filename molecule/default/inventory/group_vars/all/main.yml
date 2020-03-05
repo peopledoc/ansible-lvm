@@ -1,0 +1,15 @@
+---
+ansible_os_family: Debian
+lvm_apply: true
+lvm_groups:
+  - vgname: vg0
+    create: true
+    state: present
+    lvnames:
+      - lvname: lv0
+        size: 10m
+        create: true
+        filesystem: ext4
+        mount: true
+        mount_point: /mnt/lv0
+        mount_options: 'defaults'
