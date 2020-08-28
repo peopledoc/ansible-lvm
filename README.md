@@ -31,6 +31,8 @@ Role Variables
 - `filesystem`: defines filesystem to format lvol as
 - `mount_point`: defines mountpoint
 - `mount_options`: defines mount options (comma separated)
+- `lvm_owner`: defines lvm owner (default to root)
+- `lvm_group`: defines lvm group (default to root)
 
 Dependencies
 ------------
@@ -74,6 +76,8 @@ Apply configuration with multiple LV on the VG named `misc-vg`
                 filesystem: ext4
                 mount_point: /var/lib/mysql
                 mount_options: 'defaults,noatime'
+		lvm_owner: looker
+		lvm_group: admins
           # VG whitout LV
           - vgname: test-vg
             state: present
