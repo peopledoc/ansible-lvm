@@ -31,8 +31,8 @@ Role Variables
 - `filesystem`: defines filesystem to format lvol as
 - `mount_point`: defines mountpoint
 - `mount_options`: defines mount options (comma separated)
-- `lvm_owner`: defines lvm owner (default to root)
-- `lvm_group`: defines lvm group (default to root)
+- `lvm_owner`: defines lvm owner (default to lvm_default_owner)
+- `lvm_group`: defines lvm group (default to lvm_default_group)
 
 Dependencies
 ------------

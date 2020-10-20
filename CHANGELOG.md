@@ -1,6 +1,11 @@
 anssible-lvm
 ============
 
+0.1.2
+------
+
+Fix default owner to default values
+
 0.1.1
 ------
 
