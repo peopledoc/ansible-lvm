@@ -70,8 +70,8 @@
 - name: CHOWN | set owner and group
   file:
     path: "{{ item.1.mount_point }}"
-    owner: "{{ item.1.lvm_owner|default('root') }}"
-    group: "{{ item.1.lvm_owner|default('root') }}"
+    owner: "{{ item.1.lvm_owner|default(lvm_default_owner) }}"
+    group: "{{ item.1.lvm_group|default(lvm_default_group) }}"
   with_subelements:
     - "{{ lvm_groups }}"
     - lvnames
