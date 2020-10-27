@@ -1,6 +1,11 @@
 anssible-lvm
 ============
 
+0.1.3
+------
+
+Fix #7 gathering actual PVs used on a VG
+
 0.1.2
 ------
 
