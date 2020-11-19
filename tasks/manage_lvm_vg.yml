@@ -3,11 +3,40 @@
   debug: msg="Running on {{ item.vgname }} because {{ item.state }}"
   with_items: "{{ lvm_groups }}"
 
-- name: LVG | Creating new LVM volume group
+- name: LVG | Gather actual PV used by {{ lvm_vgname }}
+  shell: "pvs|awk '/{{ lvm_vgname }}/ {print $1;}'"
+  register: phys_vols
+  with_items: "{{ lvm_groups }}"
+  check_mode: no
+  when:
+    - item.state|default("present") == "present"
+    - item.vgname == lvm_vgname
+    - lvm_action == "add_vg"
+
+- name: LVG | Combine actual PV used by {{ lvm_vgname }} and future one
+  set_fact:
+    current_disks: "{{ [ item.1.stdout_lines , lvm_disk ] | flatten(1) }}"
+  with_together:
+    - "{{ lvm_groups }}"
+    - "{{ phys_vols.results }}"
+  when:
+    - item.0.state|default("present") == "present"
+    - item.0.vgname == lvm_vgname
+    - lvm_action == "add_vg"
+
+- name: LVG | Show disks
+  debug:
+    var: current_disks
+  with_items: "{{ lvm_groups }}"
+  when:
+    - item.state|default("present") == "present"
+    - item.vgname == lvm_vgname
+    - lvm_action == "add_vg"
+
+- name: LVG | Creating new LVM volume group or extend present
   lvg:
     vg: "{{ lvm_vgname }}"
-    pvs:
-      - "{{ lvm_disk }}"
+    pvs: "{{ current_disks }}"
     state: present
   with_items: "{{ lvm_groups }}"
   when:
